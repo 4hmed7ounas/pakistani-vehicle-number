@@ -1,0 +1,55 @@
+{
+  "name": "pakistani-vehicle-number",
+  "version": "1.0.0",
+  "description": "A tiny TypeScript utility for formatting and structurally validating Pakistani vehicle registration numbers.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "keywords": [
+    "pakistani vehicle number",
+    "pakistan number plate",
+    "punjab vehicle number",
+    "vehicle registration",
+    "number plate validator",
+    "pakistan",
+    "punjab",
+    "registration formatter"
+  ],
+  "author": "Ahmed Younas",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/<username>/pakistani-vehicle-number.git"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.6",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7"
+  }
+}
