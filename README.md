@@ -1,8 +1,23 @@
 # pakistani-vehicle-number
 
+[![npm version](https://img.shields.io/npm/v/pakistani-vehicle-number.svg)](https://www.npmjs.com/package/pakistani-vehicle-number)
+[![npm downloads](https://img.shields.io/npm/dw/pakistani-vehicle-number.svg)](https://www.npmjs.com/package/pakistani-vehicle-number)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![bundle size](https://img.shields.io/bundlephobia/min/pakistani-vehicle-number)](https://bundlephobia.com/package/pakistani-vehicle-number)
+
 A tiny TypeScript utility for formatting and structurally validating Pakistani vehicle registration numbers.
 
 Zero runtime dependencies. Dual ESM and CommonJS support with strict TypeScript declarations.
+
+---
+
+## Value Proposition
+
+* **Zero runtime dependencies** — minimal footprint, fast, and secure
+* **TypeScript-first** — includes complete type definitions and type predicates
+* **Dual module support** — first-class ESM (`import`) and CommonJS (`require`)
+* **Focused utility** — purpose-built for Punjab Universal plate formatting and structural validation
+* **Application-ready** — ideal for web forms, backend APIs, data pipelines, ETL, and database normalization
 
 ---
 
@@ -13,45 +28,66 @@ Zero runtime dependencies. Dual ESM and CommonJS support with strict TypeScript 
 > - It checks whether a string conforms to official vehicle registration format specifications.
 > - It **does NOT** verify whether a vehicle number actually exists in the Punjab Excise & Taxation Department or MTMIS (Motor Transport Management Information System) database.
 > - It **does NOT** check vehicle ownership, active registration status, or tax records.
+> - It **does NOT** determine whether a plate actually exists.
 > - It **does NOT** infer provinces from arbitrary plate strings.
+> - It **does NOT** support arbitrary historical or legacy plate formats.
 
 ---
 
-## Current V1 Scope
+## Current Scope (v1.0.0)
 
-V1 specifically supports the **Punjab Universal Numbering Scheme** announced by the Punjab Excise, Taxation and Narcotics Control Department on January 29, 2025.
+v1.0.0 specifically supports the **Punjab Universal Numbering Scheme** announced by the Punjab Excise, Taxation and Narcotics Control Department on January 29, 2025.
 
 ### Supported Format
 
-- **Letters:** Exactly 3 letters (`A–Z`), case-insensitive
-- **Separator:** Optional single space (` `), single hyphen (`-`), or no separator
-- **Digits:** Exactly 3 digits (`0–9`)
-- **Normalized Output:** Always formatted as `ABC-123`
+* **Letters:** Exactly 3 letters (`A–Z`), case-insensitive
+* **Separator:** Optional single space (` `), single hyphen (`-`), or no separator
+* **Digits:** Exactly 3 digits (`0–9`)
+* **Normalized Output:** Always formatted as `ABC-123`
 
-| Input         | Valid | Normalized | Notes                    |
-| :------------ | :---: | :--------- | :----------------------- |
-| `ABC123`      |  ✅   | `ABC-123`  | No separator             |
-| `ABC 123`     |  ✅   | `ABC-123`  | Space separator          |
-| `ABC-123`     |  ✅   | `ABC-123`  | Hyphen separator         |
-| `abc123`      |  ✅   | `ABC-123`  | Case-insensitive         |
-| `abc-123`     |  ✅   | `ABC-123`  | Case-insensitive         |
-| `  ABC 123  ` |  ✅   | `ABC-123`  | Outer whitespace trimmed |
+### Format Examples
 
-### Invalid Examples
+#### Valid
+```text
+ABC123
+ABC 123
+ABC-123
+abc123
+```
 
-| Input      | Valid | Reason                                  |
-| :--------- | :---: | :-------------------------------------- |
-| `AB123`    |  ❌   | Exactly 3 letters required (received 2) |
-| `ABCD123`  |  ❌   | Exactly 3 letters required (received 4) |
-| `ABC12`    |  ❌   | Exactly 3 digits required (received 2)  |
-| `ABC1234`  |  ❌   | Exactly 3 digits required (received 4)  |
-| `123ABC`   |  ❌   | Letters must precede digits             |
-| `ABC-12`   |  ❌   | Only 2 digits                           |
-| `ABC-1234` |  ❌   | 4 digits                                |
-| `ABC--123` |  ❌   | Multiple separators not allowed         |
-| `ABC  123` |  ❌   | Multiple spaces not allowed             |
-| `ABC_123`  |  ❌   | Underscore is not a valid separator     |
-| `ABC/123`  |  ❌   | Slash is not a valid separator          |
+#### Normalized
+```text
+ABC123  → ABC-123
+ABC 123 → ABC-123
+abc123  → ABC-123
+```
+
+#### Invalid
+```text
+AB123      (requires exactly 3 letters)
+ABCD123    (requires exactly 3 letters)
+ABC12      (requires exactly 3 digits)
+ABC1234    (requires exactly 3 digits)
+123ABC     (letters must precede digits)
+ABC-12     (requires exactly 3 digits)
+ABC-1234   (requires exactly 3 digits)
+```
+
+| Input | Valid | Normalized | Notes |
+| :--- | :---: | :--- | :--- |
+| `ABC123` | ✅ | `ABC-123` | Standard no separator |
+| `ABC 123` | ✅ | `ABC-123` | Standard space separator |
+| `ABC-123` | ✅ | `ABC-123` | Standard hyphen separator |
+| `abc123` | ✅ | `ABC-123` | Case-insensitive |
+| `abc-123` | ✅ | `ABC-123` | Case-insensitive |
+| `  ABC 123  ` | ✅ | `ABC-123` | Outer whitespace trimmed |
+| `AB123` | ❌ | — | Only 2 letters |
+| `ABCD123` | ❌ | — | 4 letters |
+| `ABC12` | ❌ | — | Only 2 digits |
+| `ABC1234` | ❌ | — | 4 digits |
+| `123ABC` | ❌ | — | Inverted order |
+| `ABC--123` | ❌ | — | Multiple separators |
+| `ABC_123` | ❌ | — | Invalid separator |
 
 ---
 
@@ -81,6 +117,24 @@ import {
   isPunjabVehicleNumber,
   parsePunjabVehicleNumber,
 } from "pakistani-vehicle-number";
+
+// Formatting
+formatPunjabVehicleNumber("abc123");
+// "ABC-123"
+
+// Validation (TypeScript type guard)
+isPunjabVehicleNumber("ABC-123");
+// true
+
+// Parsing
+parsePunjabVehicleNumber("ABC 123");
+// {
+//   province: "punjab",
+//   format: "universal",
+//   letters: "ABC",
+//   number: "123",
+//   normalized: "ABC-123"
+// }
 ```
 
 ### CommonJS
@@ -91,11 +145,14 @@ const {
   isPunjabVehicleNumber,
   parsePunjabVehicleNumber,
 } = require("pakistani-vehicle-number");
+
+console.log(formatPunjabVehicleNumber("abc 123")); // "ABC-123"
+console.log(isPunjabVehicleNumber("ABC-123"));      // true
 ```
 
 ---
 
-## Usage Examples
+## Usage Guide
 
 ### Formatting
 
@@ -104,9 +161,9 @@ const {
 ```ts
 import { formatPunjabVehicleNumber } from "pakistani-vehicle-number";
 
-formatPunjabVehicleNumber("abc123"); // "ABC-123"
-formatPunjabVehicleNumber("ABC 123"); // "ABC-123"
-formatPunjabVehicleNumber("ABC-123"); // "ABC-123"
+formatPunjabVehicleNumber("abc123");     // "ABC-123"
+formatPunjabVehicleNumber("ABC 123");    // "ABC-123"
+formatPunjabVehicleNumber("ABC-123");    // "ABC-123"
 formatPunjabVehicleNumber("  lea 456 "); // "LEA-456"
 
 // Invalid inputs throw an Error:
@@ -130,15 +187,15 @@ import {
 
 isPunjabVehicleNumber("ABC 123"); // true
 isPunjabVehicleNumber("abc-123"); // true
-isPunjabVehicleNumber("ABC123"); // true
+isPunjabVehicleNumber("ABC123");  // true
 isPunjabVehicleNumber("ABCD123"); // false
-isPunjabVehicleNumber("ABC12"); // false
+isPunjabVehicleNumber("ABC12");   // false
 
-// Safe with arbitrary input types:
-isPunjabVehicleNumber(null); // false
+// Safe with non-string types (never throws):
+isPunjabVehicleNumber(null);      // false
 isPunjabVehicleNumber(undefined); // false
-isPunjabVehicleNumber(123456); // false
-isPunjabVehicleNumber({}); // false
+isPunjabVehicleNumber(123456);    // false
+isPunjabVehicleNumber({});        // false
 
 // Type narrowing in TypeScript:
 const rawInput: unknown = "abc-123";
@@ -170,7 +227,7 @@ if (result) {
 }
 
 parsePunjabVehicleNumber("invalid"); // null
-parsePunjabVehicleNumber(""); // null
+parsePunjabVehicleNumber("");        // null
 ```
 
 ---
@@ -181,12 +238,12 @@ parsePunjabVehicleNumber(""); // null
 
 Formats a Punjab registration number string into normalized `ABC-123`.
 
-- **Throws `TypeError`** if `value` is not a string.
-- **Throws `Error`** if `value` does not structurally match the scheme.
+* **Throws `TypeError`** if `value` is not a string.
+* **Throws `Error`** if `value` does not structurally match the scheme.
 
 ### `isPunjabVehicleNumber(value: unknown): value is string`
 
-Returns `true` if `value` is a valid Punjab vehicle number string; otherwise returns `false`. Never throws.
+Type guard that returns `true` if `value` is a valid Punjab vehicle number string; otherwise returns `false`. Never throws.
 
 ### `parsePunjabVehicleNumber(value: string): PunjabVehicleNumber | null`
 
@@ -214,16 +271,18 @@ Exported stateless regular expression: `/^[A-Za-z]{3}[ -]?[0-9]{3}$/`.
 
 ## Roadmap
 
-Future releases will add structural validation for additional Pakistani registration formats:
+Potential future versions may add:
 
-- [ ] Sindh vehicle registration schemes (e.g. `ABC-1234`)
-- [ ] Islamabad Capital Territory (ICT) registration formats
-- [ ] Khyber Pakhtunkhwa (KPK) registration formats
-- [ ] Balochistan registration formats
-- [ ] Legacy Punjab series (district-based codes and year prefixes)
+- Sindh vehicle number formats
+- Islamabad Capital Territory formats
+- KPK formats
+- Balochistan formats
+- legacy Punjab formats
+
+These are not supported in v1.0.0.
 
 ---
 
 ## License
 
-MIT © [Ahmed Younas](https://github.com/4hmed7ounas/pakistani-vehicle-number.git)
+MIT © [Ahmed Younas](https://github.com/4hmed7ounas/pakistani-vehicle-number)
