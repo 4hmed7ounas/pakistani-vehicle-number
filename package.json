@@ -45,7 +45,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/<username>/pakistani-vehicle-number.git"
+    "url": "https://github.com/4hmed7ounas/pakistani-vehicle-number.git"
   },
   "devDependencies": {
     "tsup": "^8.3.6",

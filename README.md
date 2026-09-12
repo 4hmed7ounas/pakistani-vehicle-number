@@ -10,10 +10,10 @@ Zero runtime dependencies. Dual ESM and CommonJS support with strict TypeScript 
 
 > **Important:** This package performs **structural format validation only**.
 >
-> * It checks whether a string conforms to official vehicle registration format specifications.
-> * It **does NOT** verify whether a vehicle number actually exists in the Punjab Excise & Taxation Department or MTMIS (Motor Transport Management Information System) database.
-> * It **does NOT** check vehicle ownership, active registration status, or tax records.
-> * It **does NOT** infer provinces from arbitrary plate strings.
+> - It checks whether a string conforms to official vehicle registration format specifications.
+> - It **does NOT** verify whether a vehicle number actually exists in the Punjab Excise & Taxation Department or MTMIS (Motor Transport Management Information System) database.
+> - It **does NOT** check vehicle ownership, active registration status, or tax records.
+> - It **does NOT** infer provinces from arbitrary plate strings.
 
 ---
 
@@ -23,35 +23,35 @@ V1 specifically supports the **Punjab Universal Numbering Scheme** announced by 
 
 ### Supported Format
 
-* **Letters:** Exactly 3 letters (`A–Z`), case-insensitive
-* **Separator:** Optional single space (` `), single hyphen (`-`), or no separator
-* **Digits:** Exactly 3 digits (`0–9`)
-* **Normalized Output:** Always formatted as `ABC-123`
+- **Letters:** Exactly 3 letters (`A–Z`), case-insensitive
+- **Separator:** Optional single space (` `), single hyphen (`-`), or no separator
+- **Digits:** Exactly 3 digits (`0–9`)
+- **Normalized Output:** Always formatted as `ABC-123`
 
-| Input | Valid | Normalized | Notes |
-| :--- | :---: | :--- | :--- |
-| `ABC123` | ✅ | `ABC-123` | No separator |
-| `ABC 123` | ✅ | `ABC-123` | Space separator |
-| `ABC-123` | ✅ | `ABC-123` | Hyphen separator |
-| `abc123` | ✅ | `ABC-123` | Case-insensitive |
-| `abc-123` | ✅ | `ABC-123` | Case-insensitive |
-| `  ABC 123  ` | ✅ | `ABC-123` | Outer whitespace trimmed |
+| Input         | Valid | Normalized | Notes                    |
+| :------------ | :---: | :--------- | :----------------------- |
+| `ABC123`      |  ✅   | `ABC-123`  | No separator             |
+| `ABC 123`     |  ✅   | `ABC-123`  | Space separator          |
+| `ABC-123`     |  ✅   | `ABC-123`  | Hyphen separator         |
+| `abc123`      |  ✅   | `ABC-123`  | Case-insensitive         |
+| `abc-123`     |  ✅   | `ABC-123`  | Case-insensitive         |
+| `  ABC 123  ` |  ✅   | `ABC-123`  | Outer whitespace trimmed |
 
 ### Invalid Examples
 
-| Input | Valid | Reason |
-| :--- | :---: | :--- |
-| `AB123` | ❌ | Exactly 3 letters required (received 2) |
-| `ABCD123` | ❌ | Exactly 3 letters required (received 4) |
-| `ABC12` | ❌ | Exactly 3 digits required (received 2) |
-| `ABC1234` | ❌ | Exactly 3 digits required (received 4) |
-| `123ABC` | ❌ | Letters must precede digits |
-| `ABC-12` | ❌ | Only 2 digits |
-| `ABC-1234` | ❌ | 4 digits |
-| `ABC--123` | ❌ | Multiple separators not allowed |
-| `ABC  123` | ❌ | Multiple spaces not allowed |
-| `ABC_123` | ❌ | Underscore is not a valid separator |
-| `ABC/123` | ❌ | Slash is not a valid separator |
+| Input      | Valid | Reason                                  |
+| :--------- | :---: | :-------------------------------------- |
+| `AB123`    |  ❌   | Exactly 3 letters required (received 2) |
+| `ABCD123`  |  ❌   | Exactly 3 letters required (received 4) |
+| `ABC12`    |  ❌   | Exactly 3 digits required (received 2)  |
+| `ABC1234`  |  ❌   | Exactly 3 digits required (received 4)  |
+| `123ABC`   |  ❌   | Letters must precede digits             |
+| `ABC-12`   |  ❌   | Only 2 digits                           |
+| `ABC-1234` |  ❌   | 4 digits                                |
+| `ABC--123` |  ❌   | Multiple separators not allowed         |
+| `ABC  123` |  ❌   | Multiple spaces not allowed             |
+| `ABC_123`  |  ❌   | Underscore is not a valid separator     |
+| `ABC/123`  |  ❌   | Slash is not a valid separator          |
 
 ---
 
@@ -104,9 +104,9 @@ const {
 ```ts
 import { formatPunjabVehicleNumber } from "pakistani-vehicle-number";
 
-formatPunjabVehicleNumber("abc123");   // "ABC-123"
-formatPunjabVehicleNumber("ABC 123");  // "ABC-123"
-formatPunjabVehicleNumber("ABC-123");  // "ABC-123"
+formatPunjabVehicleNumber("abc123"); // "ABC-123"
+formatPunjabVehicleNumber("ABC 123"); // "ABC-123"
+formatPunjabVehicleNumber("ABC-123"); // "ABC-123"
 formatPunjabVehicleNumber("  lea 456 "); // "LEA-456"
 
 // Invalid inputs throw an Error:
@@ -123,19 +123,22 @@ try {
 `isPunjabVehicleNumber()` checks format validity safely without throwing. It acts as a TypeScript type guard (`value is string`).
 
 ```ts
-import { isPunjabVehicleNumber, formatPunjabVehicleNumber } from "pakistani-vehicle-number";
+import {
+  isPunjabVehicleNumber,
+  formatPunjabVehicleNumber,
+} from "pakistani-vehicle-number";
 
 isPunjabVehicleNumber("ABC 123"); // true
 isPunjabVehicleNumber("abc-123"); // true
-isPunjabVehicleNumber("ABC123");  // true
+isPunjabVehicleNumber("ABC123"); // true
 isPunjabVehicleNumber("ABCD123"); // false
-isPunjabVehicleNumber("ABC12");   // false
+isPunjabVehicleNumber("ABC12"); // false
 
 // Safe with arbitrary input types:
-isPunjabVehicleNumber(null);      // false
+isPunjabVehicleNumber(null); // false
 isPunjabVehicleNumber(undefined); // false
-isPunjabVehicleNumber(123456);    // false
-isPunjabVehicleNumber({});        // false
+isPunjabVehicleNumber(123456); // false
+isPunjabVehicleNumber({}); // false
 
 // Type narrowing in TypeScript:
 const rawInput: unknown = "abc-123";
@@ -167,7 +170,7 @@ if (result) {
 }
 
 parsePunjabVehicleNumber("invalid"); // null
-parsePunjabVehicleNumber("");        // null
+parsePunjabVehicleNumber(""); // null
 ```
 
 ---
@@ -178,8 +181,8 @@ parsePunjabVehicleNumber("");        // null
 
 Formats a Punjab registration number string into normalized `ABC-123`.
 
-* **Throws `TypeError`** if `value` is not a string.
-* **Throws `Error`** if `value` does not structurally match the scheme.
+- **Throws `TypeError`** if `value` is not a string.
+- **Throws `Error`** if `value` does not structurally match the scheme.
 
 ### `isPunjabVehicleNumber(value: unknown): value is string`
 
@@ -223,4 +226,4 @@ Future releases will add structural validation for additional Pakistani registra
 
 ## License
 
-MIT © [Ahmed Younas](https://github.com/<username>/pakistani-vehicle-number)
+MIT © [Ahmed Younas](https://github.com/4hmed7ounas/pakistani-vehicle-number.git)
